@@ -9,6 +9,29 @@ variable "dns_servers" {
 
 }
 
+variable "address_space" {
+  description = "Address space de la vnet"
+  type        = list(string)
+  
+}
+
+variable "address_prefixes" {
+  description = "Address prefixes de las subnets"
+  type        = list(string)
+  
+}
+
+variable "source_address_prefix" {
+  description = "Address prefixes de las subnets"
+  type        = string
+}
+
+variable "destination_address_prefix" {
+  description = "Address prefixes de las subnets"
+  type        = string
+}
+
+
 locals {
   region = "eastus"
   environment = "Sub IAC"
@@ -21,3 +44,4 @@ locals {
     Team = local.team
   }
 }
+
