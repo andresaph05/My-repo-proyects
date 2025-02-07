@@ -44,4 +44,3 @@ locals {
     Team = local.team
   }
 }
-

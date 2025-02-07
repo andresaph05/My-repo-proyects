@@ -8,7 +8,7 @@ resource "azurerm_virtual_network" "vnet-vpn-test" {
   name                = "vnet-vpn"
   location            = azurerm_resource_group.rg-vpn-test.location
   resource_group_name = azurerm_resource_group.rg-vpn-test.name
-  address_space       = var.address_space
+  address_space       = ["192.168.200.0/24"]
   dns_servers         = var.dns_servers
 }
 
@@ -16,14 +16,14 @@ resource "azurerm_subnet" "subnet_gw" {
   name                 = "GatewaySubnet"
   resource_group_name  = azurerm_resource_group.rg-vpn-test.name
   virtual_network_name = azurerm_virtual_network.vnet-vpn-test.name
-  address_prefixes     = [var.address_prefixes[0]]
+  address_prefixes     = ["192.168.200.0/26"]
 }
 
 resource "azurerm_subnet" "subnet_lan" {
   name                 = "Subnet-1"
   resource_group_name  = azurerm_resource_group.rg-vpn-test.name
   virtual_network_name = azurerm_virtual_network.vnet-vpn-test.name
-  address_prefixes     = [var.address_prefixes[1]]
+  address_prefixes     = ["192.168.200.64/26"]
 }
 
 resource "azurerm_network_security_group" "nsg_to_vnet_vpn" {
@@ -31,6 +31,8 @@ resource "azurerm_network_security_group" "nsg_to_vnet_vpn" {
   location            = azurerm_resource_group.rg-vpn-test.location
   resource_group_name = azurerm_resource_group.rg-vpn-test.name
 
+
+##### SOLO PARA FINES EDUCACTIVOS y PRACTICOS POR DEFECTO SE CREA UNA REGLA DE SEGURIDAD QUE PERMITE TODO EL TRAFICO
   security_rule {
     name                       = "RDP"
     priority                   = 100
@@ -39,8 +41,8 @@ resource "azurerm_network_security_group" "nsg_to_vnet_vpn" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "3389"
-    source_address_prefix      = var.source_address_prefix
-    destination_address_prefix = var.destination_address_prefix
+    source_address_prefix      = "192.168.250.0/24"
+    destination_address_prefix = "192.168.200.64/26"
   }
   security_rule {
     name                       = "ICMP"
@@ -50,8 +52,8 @@ resource "azurerm_network_security_group" "nsg_to_vnet_vpn" {
     protocol                   = "Icmp"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefix      = var.source_address_prefix
-    destination_address_prefix = var.destination_address_prefix
+    source_address_prefix      = "192.168.250.0/24"
+    destination_address_prefix = "192.168.200.64/26"
   }
 
 }
@@ -79,8 +81,8 @@ resource "azurerm_windows_virtual_machine" "example" {
   resource_group_name = azurerm_resource_group.rg-vpn-test.name
   location            = azurerm_resource_group.rg-vpn-test.location
   size                = "Standard_F2"
-  admin_username      = "adminuser"
-  admin_password      = "contigo123!"
+  admin_username      = "xxxxxxxx"
+  admin_password      = var.admin_password
   network_interface_ids = [
     azurerm_network_interface.nic_vm_windows.id,
   ]
@@ -131,7 +133,7 @@ resource "azurerm_local_network_gateway" "lngw_test" {
   name                = "lngw_test_forti"
   resource_group_name = azurerm_resource_group.rg-vpn-test.name
   location            = azurerm_resource_group.rg-vpn-test.location
-  gateway_address     = "190.35.246.78"
+  gateway_address     = var.gw_address_public
   address_space       = var.lngw_address_space
 }
 
@@ -145,5 +147,5 @@ resource "azurerm_virtual_network_gateway_connection" "onpremise_forti" {
   virtual_network_gateway_id = azurerm_virtual_network_gateway.vngw_test.id
   local_network_gateway_id   = azurerm_local_network_gateway.lngw_test.id
 
-  shared_key = "testvpnkey"
+  shared_key = "xxxxxxxxxx"
 }
