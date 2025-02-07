@@ -10,27 +10,40 @@ variable "dns_servers" {
 }
 
 variable "address_space" {
-  description = "Address space de la vnet"
-  type        = list(string)
+  description = "Address space de la red virtual"
+  type        = string
   
 }
 
-variable "address_prefixes" {
-  description = "Address prefixes de las subnets"
-  type        = list(string)
+variable "prefix_1" {
+  description = "Prefix de la subred 1"
+  type        = string
   
 }
 
-variable "source_address_prefix" {
-  description = "Address prefixes de las subnets"
+variable "prefix_2" {
+  description = "Prefix de la subred 1"
   type        = string
+  
 }
 
-variable "destination_address_prefix" {
-  description = "Address prefixes de las subnets"
+variable "extrenal_prefix" {
+  description = "Prefix de la subred 1"
   type        = string
+  
 }
 
+variable "gw_address_public" {
+  description = "Direccion publica del gateway"
+  type        = string
+  
+}
+
+variable "admin_password" {
+  description = "Password de la maquina virtual"
+  type        = string
+  
+}
 
 locals {
   region = "eastus"
